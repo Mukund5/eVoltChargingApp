@@ -36,5 +36,4 @@ public class UserDetailsController {
         LOGGER.info("Entered " + CLASS_NAME + ":" + METHOD_NAME + "with inputs: " + inputUserCredentials);
         return userDetailsService.validateLogin(inputUserCredentials);
     }
-
 }
