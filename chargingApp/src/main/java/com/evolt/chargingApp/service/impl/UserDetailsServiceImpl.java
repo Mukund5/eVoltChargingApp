@@ -59,7 +59,6 @@ the values present in the User details database table
             response=userDetailsDAO.validateLoginCredentials(loginCredentials);
 
         LOGGER.info(METHOD_NAME+" -Time taken in milliseconds:"+(System.currentTimeMillis()-startTime));
-
         return response;
     }
 }
