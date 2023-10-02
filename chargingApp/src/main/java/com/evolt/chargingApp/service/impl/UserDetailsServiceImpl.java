@@ -31,6 +31,7 @@ the values present in the User details database table
     @Override
     public ResponseObject validateLogin(Map<String, Object> loginCredentials) {
 
+        long startTime=System.currentTimeMillis();
         final String METHOD_NAME = "validateLogin";
         LOGGER.info("Entered " + CLASS_NAME + ":" + METHOD_NAME);
         ResponseObject response = new ResponseObject();
@@ -56,6 +57,8 @@ the values present in the User details database table
             response.setErrorMessage("Invalid Password");
         } else
             response=userDetailsDAO.validateLoginCredentials(loginCredentials);
+
+        LOGGER.info(METHOD_NAME+" -Time taken in milliseconds:"+(System.currentTimeMillis()-startTime));
 
         return response;
     }
