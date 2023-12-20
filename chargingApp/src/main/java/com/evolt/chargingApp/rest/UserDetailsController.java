@@ -22,8 +22,6 @@ public class UserDetailsController {
 
     private static final Logger LOGGER = LogManager.getLogger(UserDetailsController.class);
     private static final String CLASS_NAME = "UserDetailsController";
-    @Autowired
-    Constants constants;
 
     @Autowired
     UserDetailsServiceImpl userDetailsService;
@@ -35,5 +33,14 @@ public class UserDetailsController {
         final String METHOD_NAME = "validateUserLoginDetails";
         LOGGER.info("Entered " + CLASS_NAME + ":" + METHOD_NAME + "with inputs: " + inputUserCredentials);
         return userDetailsService.validateLogin(inputUserCredentials);
+    }
+
+    @PostMapping("/signupUser")
+    @Produces("application/json")
+    @Consumes("application/json")
+    public ResponseObject signupUser(@RequestBody Map<String, Object> inputUserDetails) {
+        final String METHOD_NAME = "signupUser";
+        LOGGER.info("Entered " + CLASS_NAME + ":" + METHOD_NAME + "with inputs: " + inputUserDetails);
+        return userDetailsService.signupNewUser(inputUserDetails);
     }
 }

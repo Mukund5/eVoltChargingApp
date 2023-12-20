@@ -4,8 +4,25 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class Constants {
-    public final String SUCCESS_RESPONSE_MESSAGE = "SUCCESS";
-    public final String FAILURE_RESPONSE_MESSAGE = "FAILURE";
-    public final Integer SUCCESS_RESPONSE_CODE = 200;
-    public final Integer FAILURE_RESPONSE_CODE = 424;
+    public static final String SUCCESS_RESPONSE_MESSAGE = "SUCCESS";
+    public static final String FAILURE_RESPONSE_MESSAGE = "FAILURE";
+    public static final Integer SUCCESS_RESPONSE_CODE = 200;
+    public static final Integer FAILURE_RESPONSE_CODE = 424;
+
+    public static final String ENCRYPTION_ALGORITHM = "AES/CBC/PKCS5Padding";
+
+    public static final Integer ENCRYPTION_KEY_BYTES=256;
+
+    public static final String ENCRYPTION_SALT_KEY = "TestEvoltApplicationSalt";
+
+    public static final String ENCRYPTION_PASSWORD="TestEvoltAppPassword";
+
+    public static enum UserTypes {
+        Customer,
+        Supplier,
+        Admin
+    }
+
+    public static final String MOBILE_NUMBER_PATTERN = "\\d{10}";
+
 }
