@@ -23,6 +23,32 @@ public class Constants {
         Admin
     }
 
+    public static enum ChargingStationStatus {
+        Active,
+        Inactive,
+        Maintenance
+    }
+
+    public static enum ChargingPortStatus {
+        Active,
+        Inactive,
+        Maintenance
+    }
+
+    public static enum ChargingAppointmentStatus {
+        Reserved,
+        Ongoing,
+        Completed
+    }
+
+    public static enum ChargingSpeeds {
+        Normal,
+        Fast,
+        Superfast
+    }
+
     public static final String MOBILE_NUMBER_PATTERN = "\\d{10}";
+
+    public static final String PINCODE_PATTERN = "\\d{6}";
 
 }
