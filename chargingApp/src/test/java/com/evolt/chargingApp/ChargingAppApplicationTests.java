@@ -66,8 +66,13 @@ System.out.println("Valid user type:"+present);
 		values.add("Jai");
 		values.add("12345345");
 		values.add("1234567890");
+		values.add("600045");
+		values.add("100045");
+		values.add("6000A5");
+		values.add("A12345");
+		values.add("12345T");
 
-		Pattern phoneNumberPattern = Pattern.compile(Constants.MOBILE_NUMBER_PATTERN);
+		Pattern phoneNumberPattern = Pattern.compile(Constants.PINCODE_PATTERN);
 		for (String value : values){
 			Matcher matcher = phoneNumberPattern.matcher(value);
 			System.out.println(matcher.matches());
