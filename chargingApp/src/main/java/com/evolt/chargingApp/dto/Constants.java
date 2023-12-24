@@ -36,8 +36,10 @@ public class Constants {
     }
 
     public static enum ChargingAppointmentStatus {
+        Available,
         Reserved,
         Ongoing,
+        Cancelled,
         Completed
     }
 

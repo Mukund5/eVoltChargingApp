@@ -43,5 +43,14 @@ public class ChargingStationController {
         return chargingStationServiceImpl.getChargingPortDetails(inputObject);
     }
 
+    @PostMapping("/getChargingApptDetails")
+    @Produces("application/json")
+    @Consumes("application/json")
+    public ResponseObject getChargingApptDetails(@RequestBody Map<String, Object> inputObject) {
+        final String METHOD_NAME = "getChargingApptDetails";
+        LOGGER.info("Entered " + CLASS_NAME + ":" + METHOD_NAME + "with inputs: " + inputObject);
+        return chargingStationServiceImpl.getChargingApptDetails(inputObject);
+    }
+
 
 }
