@@ -5,6 +5,7 @@ import com.evolt.chargingApp.dto.Constants;
 import com.evolt.chargingApp.dto.ResponseObject;
 import com.evolt.chargingApp.service.ChargingStationService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.validator.GenericValidator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +82,43 @@ public class ChargingStationServiceImpl implements ChargingStationService {
         }
         else
             response=chargingStationDAO.getChargingPortDetails(input);
+
+        LOGGER.info(METHOD_NAME+" -Time taken in milliseconds:"+(System.currentTimeMillis()-startTime));
+        return response;
+    }
+
+    @Override
+    public ResponseObject getChargingApptDetails(Map<String,Object> input)
+    {
+
+        long startTime=System.currentTimeMillis();
+        final String METHOD_NAME = "getChargingApptDetails";
+        LOGGER.info("Entered " + CLASS_NAME + ":" + METHOD_NAME);
+        ResponseObject response = new ResponseObject();
+        response.setResponseCode(Constants.SUCCESS_RESPONSE_CODE);
+        response.setResponseStatus(Constants.SUCCESS_RESPONSE_MESSAGE);
+
+        if (!input.containsKey("charging_point_id") ||
+                (!(input.get("charging_point_id") instanceof String)
+                        || StringUtils.isBlank((String) input.get("charging_point_id")))
+        ) {
+            LOGGER.info(METHOD_NAME + ": Invalid/Empty Charging point ID");
+            response.setResponseCode(Constants.FAILURE_RESPONSE_CODE);
+            response.setResponseStatus(Constants.FAILURE_RESPONSE_MESSAGE);
+            response.setErrorMessage("Invalid/Empty Charging point ID");
+        }
+        else if (!input.containsKey("appointment_date") ||
+                (!(input.get("appointment_date") instanceof String)
+                        || StringUtils.isBlank((String) input.get("appointment_date")))
+                || !GenericValidator.isDate((String) input.get("appointment_date"), "dd-MMM-yyyy", true)
+        ) {
+            LOGGER.info(METHOD_NAME + ": Invalid/Empty Appointment date");
+            response.setResponseCode(Constants.FAILURE_RESPONSE_CODE);
+            response.setResponseStatus(Constants.FAILURE_RESPONSE_MESSAGE);
+            response.setErrorMessage("Invalid/Empty Appointment date");
+        }
+        else
+            response=chargingStationDAO.getTimeslotDetails(input);
 
         LOGGER.info(METHOD_NAME+" -Time taken in milliseconds:"+(System.currentTimeMillis()-startTime));
         return response;

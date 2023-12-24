@@ -9,4 +9,6 @@ public interface ChargingStationService {
 
     public ResponseObject getChargingPortDetails(Map<String,Object> input);
 
+    public ResponseObject getChargingApptDetails(Map<String,Object> input);
+
 }

@@ -2,18 +2,21 @@ package com.evolt.chargingApp.dao;
 
 import com.evolt.chargingApp.dto.*;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.validator.GenericValidator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class ChargingStationDAO {
@@ -163,6 +166,142 @@ public class ChargingStationDAO {
 
         LOGGER.info("Exiting from " + CLASS_NAME + ":" + METHOD_NAME);
         return response;
+    }
+
+    public ResponseObject getTimeslotDetails(Map<String, Object> input) {
+
+        final String METHOD_NAME = "getTimeslotDetails";
+        LOGGER.info("Entering " + CLASS_NAME + ":" + METHOD_NAME);
+
+        ResponseObject response = new ResponseObject();
+        response.setResponseCode(Constants.FAILURE_RESPONSE_CODE);
+        response.setResponseStatus(Constants.FAILURE_RESPONSE_MESSAGE);
+        response.setErrorMessage("Error in getting Charging appointment details");
+
+        Connection connection = commonDAO.createEvuserConnection();
+
+        PreparedStatement pstmt = null;
+        try {
+            pstmt = connection.prepareStatement("select appointment_id,charging_pt_id,user_id,appt_date,appt_start_time,appt_end_time," +
+                    "appt_status,duration_in_mins,selected_charging_type,total_fare from charging_appointments where " +
+                    "charging_pt_id= ? and appt_date=TO_DATE( ? ) and appt_status in ( ? ,? ) ");
+
+
+            String chargingPointIdStr=(String)input.get("charging_point_id");
+            Long chargingPointId=Long.parseLong(chargingPointIdStr);
+
+            pstmt.setLong(1,chargingPointId);
+            pstmt.setString(2,(String)input.get("appointment_date"));
+            pstmt.setString(3,Constants.ChargingAppointmentStatus.Reserved.name());
+            pstmt.setString(4,Constants.ChargingAppointmentStatus.Ongoing.name());
+
+            //Execute the select query
+            ResultSet resultSet = pstmt.executeQuery();
+            List<ChargingAppointment> chargingAppointments=new ArrayList<>();
+            while (resultSet.next()) {
+                ChargingAppointment appointment=new ChargingAppointment();
+
+                appointment.setAppointmentId(resultSet.getLong("appointment_id"));
+                appointment.setChargingPointId(resultSet.getLong("charging_pt_id"));
+                appointment.setUserId(resultSet.getLong("user_id"));
+                appointment.setAppointmentDate(resultSet.getDate("appt_date"));
+                appointment.setApptStartTime(resultSet.getTimestamp("appt_start_time"));
+                appointment.setApptEndTime(resultSet.getTimestamp("appt_end_time"));
+                appointment.setApptStatus(resultSet.getString("appt_status"));
+                appointment.setDurationInMins(resultSet.getLong("duration_in_mins"));
+                appointment.setSelectedChargingType(resultSet.getString("selected_charging_type"));
+                appointment.setTotalFare(resultSet.getLong("total_fare"));
+
+                chargingAppointments.add(appointment);
+            }
+
+            List<AppointmentSlot> apptSlots=formTimeSlotsForDay((String)input.get("appointment_date"),chargingAppointments);
+            response.setResponseData(apptSlots);
+            response.setResponseCode(Constants.SUCCESS_RESPONSE_CODE);
+            response.setResponseStatus(Constants.SUCCESS_RESPONSE_MESSAGE);
+            response.setErrorMessage("Successfully retrieved Charging appointment details");
+
+        } catch (Exception e) {
+            LOGGER.error("Error in getting Charging appointment details:"+e.getMessage());
+            response.setResponseCode(Constants.FAILURE_RESPONSE_CODE);
+            response.setResponseStatus(Constants.FAILURE_RESPONSE_MESSAGE);
+            response.setErrorMessage("Error in getting Charging appointment details");
+            //throw new RuntimeException(e);
+        }
+
+        finally {
+            commonDAO.closeEvuserConnection(connection);
+        }
+
+        LOGGER.info("Exiting from " + CLASS_NAME + ":" + METHOD_NAME);
+        return response;
+    }
+
+    private List<AppointmentSlot> formTimeSlotsForDay(String dateString,List<ChargingAppointment> chargingAppointments)
+    {
+
+        List<AppointmentSlot> timeSlots=new ArrayList<>();
+        DateFormat sdf = new SimpleDateFormat("dd-MMM-yyyy");
+
+        try {
+
+            java.util.Date dateObject = sdf.parse(dateString);
+            Timestamp todayTimeStamp = new Timestamp(dateObject.getTime());
+            //LOGGER.info("Today's Timestamp:"+todayTimeStamp);
+
+            Long oneSecond=new Long(1000);
+            Long halfHourInMillis=new Long(30*60*oneSecond);
+            Timestamp tomorrowTimeStamp=new Timestamp(todayTimeStamp.getTime()+(halfHourInMillis*48));
+            //LOGGER.info("Tomorrow's Timestamp:" + tomorrowTimeStamp);
+
+            Timestamp currentTimeStamp=todayTimeStamp;
+            int slotNumber=1;
+            while(currentTimeStamp.before(tomorrowTimeStamp))
+            {
+                AppointmentSlot apptSlot=new AppointmentSlot();
+                //LOGGER.info("Slot number:"+slotNumber);
+
+                Timestamp startTimeStamp=new Timestamp(currentTimeStamp.getTime());
+                //LOGGER.info("Start time:"+startTimeStamp);
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTimeInMillis(startTimeStamp.getTime());
+                SimpleDateFormat sdf2 = new SimpleDateFormat("HH:mm");
+                String slotStartTime = sdf2.format(calendar.getTime());
+                //LOGGER.info("Formatted start time in HH:mm:"+slotStartTime);
+                apptSlot.setStartTime(slotStartTime);
+
+                currentTimeStamp.setTime(currentTimeStamp.getTime()+halfHourInMillis);
+                Timestamp endTimeStamp=new Timestamp(currentTimeStamp.getTime());
+                //LOGGER.info("End time:"+endTimeStamp);
+                calendar.setTimeInMillis(endTimeStamp.getTime());
+                String slotEndTime = sdf2.format(calendar.getTime());
+                //LOGGER.info("Formatted end time in HH:mm:"+slotEndTime);
+                apptSlot.setEndTime(slotEndTime);
+
+                apptSlot.setSlotStatus(Constants.ChargingAppointmentStatus.Available.name());
+
+                for(ChargingAppointment appt:chargingAppointments)
+                {
+                    if((startTimeStamp.after(appt.getApptStartTime()) || startTimeStamp.equals(appt.getApptStartTime()))
+                            && (endTimeStamp.before(appt.getApptEndTime()) || endTimeStamp.equals(appt.getApptEndTime())))
+                    {
+                       /* LOGGER.info("startTimeStamp:"+startTimeStamp);
+                        LOGGER.info("appt.getApptStartTime():"+appt.getApptStartTime());
+                        LOGGER.info("endTimeStamp:"+endTimeStamp);
+                        LOGGER.info("appt.getApptEndTime():"+appt.getApptEndTime());
+                        */
+                        apptSlot.setSlotStatus(appt.getApptStatus());
+                    }
+                }
+               // LOGGER.info("Appt:"+apptSlot);
+                timeSlots.add(apptSlot);
+                slotNumber++;
+            }
+
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+        return timeSlots;
     }
 
 }
