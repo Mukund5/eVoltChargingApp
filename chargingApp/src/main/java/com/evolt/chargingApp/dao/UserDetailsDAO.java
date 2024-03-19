@@ -1,5 +1,6 @@
 package com.evolt.chargingApp.dao;
 
+import com.evolt.chargingApp.dto.ChargingAppointment;
 import com.evolt.chargingApp.dto.Constants;
 import com.evolt.chargingApp.dto.ResponseObject;
 import com.evolt.chargingApp.dto.UserDetails;
@@ -22,6 +23,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -119,6 +122,152 @@ public class UserDetailsDAO {
         return response;
     }
 
+
+    public ResponseObject getUserDetails(Map<String, Object> loginCredentials) {
+
+        final String METHOD_NAME = "getUserDetails";
+        LOGGER.info("Entering " + CLASS_NAME + ":" + METHOD_NAME);
+
+        ResponseObject response = new ResponseObject();
+        response.setResponseCode(Constants.FAILURE_RESPONSE_CODE);
+        response.setResponseStatus(Constants.FAILURE_RESPONSE_MESSAGE);
+        response.setErrorMessage("No such User ID found");
+
+        Connection connection = commonDAO.createEvuserConnection();
+
+        PreparedStatement pstmt = null;
+        try {
+            //Create the prepared statement object
+            pstmt = connection.prepareStatement("select user_id,user_type,first_name,last_name,email_address,phone_number,driving_license from user_details where user_id= ?");
+            pstmt.setString(1, (String) loginCredentials.get("user_id"));
+
+            //Execute the select query
+            ResultSet resultSet = pstmt.executeQuery();
+            while (resultSet.next()) {
+
+                response.setResponseCode(Constants.SUCCESS_RESPONSE_CODE);
+                response.setResponseStatus(Constants.SUCCESS_RESPONSE_MESSAGE);
+                UserDetails userDetails = new UserDetails();
+                userDetails.setUserId(resultSet.getLong("user_id"));
+                userDetails.setUserType(resultSet.getString("user_type"));
+                userDetails.setFirstName(resultSet.getString("first_name"));
+                userDetails.setLastName(resultSet.getString("last_name"));
+                userDetails.setEmailAddress(resultSet.getString("email_address"));
+                userDetails.setPhoneNumber(resultSet.getLong("phone_number"));
+                userDetails.setDrivingLicense(resultSet.getString("driving_license"));
+
+                response.setResponseData(userDetails);
+                response.setErrorMessage(null);
+
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        /*catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+        catch (InvalidAlgorithmParameterException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchPaddingException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalBlockSizeException e) {
+            throw new RuntimeException(e);
+        } catch (BadPaddingException e) {
+            throw new RuntimeException(e);
+        } catch (InvalidKeyException e) {
+            throw new RuntimeException(e);
+        } catch (InvalidKeySpecException e) {
+            throw new RuntimeException(e);
+        }
+
+         */
+        finally {
+
+            commonDAO.closeEvuserConnection(connection);
+        }
+
+        LOGGER.info("Exiting from " + CLASS_NAME + ":" + METHOD_NAME);
+        return response;
+    }
+
+    public ResponseObject getUserBookings(Map<String, Object> loginCredentials) {
+
+        final String METHOD_NAME = "getUserBookings";
+        LOGGER.info("Entering " + CLASS_NAME + ":" + METHOD_NAME);
+
+        ResponseObject response = new ResponseObject();
+        response.setResponseCode(Constants.FAILURE_RESPONSE_CODE);
+        response.setResponseStatus(Constants.FAILURE_RESPONSE_MESSAGE);
+        response.setErrorMessage("No Bookings found for given User ID");
+
+        Connection connection = commonDAO.createEvuserConnection();
+
+        PreparedStatement pstmt = null;
+        List<ChargingAppointment> appointmentList=new ArrayList<>();
+
+        try {
+            //Create the prepared statement object
+            pstmt = connection.prepareStatement("SELECT appt.APPOINTMENT_ID,appt.CHARGING_PT_ID, appt.APPT_DATE, appt.APPT_START_TIME, appt.DURATION_IN_MINS,\n" +
+                    "appt.APPT_END_TIME,   appt.APPT_STATUS,      appt.SELECTED_CHARGING_TYPE, appt.TOTAL_FARE, appt.USER_ID,\n" +
+                    "station.address as address FROM EVUSER.charging_appointments appt, evuser.charging_points point,evuser.charging_station station where appt.USER_ID= ? and appt.charging_pt_id=point.charging_pt_id and station.charging_station_id=point.charging_station_id order by appt_date,appt_start_time asc");
+            pstmt.setString(1, (String) loginCredentials.get("user_id"));
+
+            //Execute the select query
+            ResultSet resultSet = pstmt.executeQuery();
+            while (resultSet.next()) {
+
+                response.setResponseCode(Constants.SUCCESS_RESPONSE_CODE);
+                response.setResponseStatus(Constants.SUCCESS_RESPONSE_MESSAGE);
+                ChargingAppointment appointment = new ChargingAppointment();
+                appointment.setAppointmentId(resultSet.getLong("APPOINTMENT_ID"));
+                appointment.setChargingPointId(resultSet.getLong("CHARGING_PT_ID"));
+                appointment.setAppointmentDate(resultSet.getDate("APPT_DATE"));
+                appointment.setApptStartTime(resultSet.getTimestamp("APPT_START_TIME"));
+                appointment.setApptEndTime(resultSet.getTimestamp("APPT_END_TIME"));
+                appointment.setApptStatus(resultSet.getString("APPT_STATUS"));
+                appointment.setSelectedChargingType(resultSet.getString("SELECTED_CHARGING_TYPE"));
+                appointment.setTotalFare(resultSet.getLong("TOTAL_FARE"));
+                appointment.setAddress(resultSet.getString("address"));
+
+                appointmentList.add(appointment);
+
+
+                response.setErrorMessage(null);
+
+            }
+
+            response.setResponseData(appointmentList);
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        /*catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+        catch (InvalidAlgorithmParameterException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchPaddingException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalBlockSizeException e) {
+            throw new RuntimeException(e);
+        } catch (BadPaddingException e) {
+            throw new RuntimeException(e);
+        } catch (InvalidKeyException e) {
+            throw new RuntimeException(e);
+        } catch (InvalidKeySpecException e) {
+            throw new RuntimeException(e);
+        }
+
+         */
+        finally {
+
+            commonDAO.closeEvuserConnection(connection);
+        }
+
+        LOGGER.info("Exiting from " + CLASS_NAME + ":" + METHOD_NAME);
+        return response;
+    }
     public ResponseObject signupUser(Map<String, Object> userDetails) {
 
         final String METHOD_NAME = "signupUser";

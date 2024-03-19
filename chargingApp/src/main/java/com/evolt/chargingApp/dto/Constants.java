@@ -53,4 +53,12 @@ public class Constants {
 
     public static final String PINCODE_PATTERN = "\\d{6}";
 
+    public static final Integer DEFAULT_NORMAL_CHARGING_RATE=30;
+
+    public static final Integer DEFAULT_FAST_CHARGING_RATE=60;
+
+    public static final Integer DEFAULT_SUPER_FAST_CHARGING_RATE=90;
+
+    public static final String TIMESTAMP_FORMAT="DD-MON-YYYY HH24:MI:SS";
+
 }

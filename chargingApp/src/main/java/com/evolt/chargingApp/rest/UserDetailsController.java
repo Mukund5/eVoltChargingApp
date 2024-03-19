@@ -6,10 +6,7 @@ import com.evolt.chargingApp.service.impl.UserDetailsServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
@@ -17,6 +14,7 @@ import java.util.Map;
 
 
 @RestController
+@CrossOrigin
 @RequestMapping("/evolt/user/")
 public class UserDetailsController {
 
@@ -35,6 +33,24 @@ public class UserDetailsController {
         return userDetailsService.validateLogin(inputUserCredentials);
     }
 
+
+    @PostMapping("/getUserDetails")
+    @Produces("application/json")
+    @Consumes("application/json")
+    public ResponseObject getUserDetails(@RequestBody Map<String, Object> inputUserCredentials) {
+        final String METHOD_NAME = "getUserDetails";
+        LOGGER.info("Entered " + CLASS_NAME + ":" + METHOD_NAME + "with inputs: " + inputUserCredentials);
+        return userDetailsService.getUserDetails(inputUserCredentials);
+    }
+
+    @PostMapping("/getUserBookings")
+    @Produces("application/json")
+    @Consumes("application/json")
+    public ResponseObject getUserBookings(@RequestBody Map<String, Object> inputUserCredentials) {
+        final String METHOD_NAME = "getUserBookings";
+        LOGGER.info("Entered " + CLASS_NAME + ":" + METHOD_NAME + "with inputs: " + inputUserCredentials);
+        return userDetailsService.getUserBookings(inputUserCredentials);
+    }
     @PostMapping("/signupUser")
     @Produces("application/json")
     @Consumes("application/json")

@@ -11,4 +11,6 @@ public interface ChargingStationService {
 
     public ResponseObject getChargingApptDetails(Map<String,Object> input);
 
+    public ResponseObject bookChargingAppt(Map<String,Object> input);
+
 }
