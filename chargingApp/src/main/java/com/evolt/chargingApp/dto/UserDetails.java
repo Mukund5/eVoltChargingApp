@@ -16,4 +16,5 @@ public class UserDetails {
     private String emailAddress;
     private Long phoneNumber;
     private String encryptedPassword;
+    private String drivingLicense;
 }

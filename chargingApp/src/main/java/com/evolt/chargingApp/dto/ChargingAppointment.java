@@ -22,4 +22,5 @@ public class ChargingAppointment {
     private Long durationInMins;
     private String selectedChargingType;
     private Long totalFare;
+    private String address;
 }

@@ -5,10 +5,7 @@ import com.evolt.chargingApp.service.impl.ChargingStationServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
@@ -16,6 +13,7 @@ import java.util.Map;
 
 
 @RestController
+@CrossOrigin
 @RequestMapping("/evolt/charging/")
 public class ChargingStationController {
 
@@ -50,6 +48,15 @@ public class ChargingStationController {
         final String METHOD_NAME = "getChargingApptDetails";
         LOGGER.info("Entered " + CLASS_NAME + ":" + METHOD_NAME + "with inputs: " + inputObject);
         return chargingStationServiceImpl.getChargingApptDetails(inputObject);
+    }
+
+    @PostMapping("/bookChargingAppt")
+    @Produces("application/json")
+    @Consumes("application/json")
+    public ResponseObject bookChargingAppointment(@RequestBody Map<String, Object> inputObject) {
+        final String METHOD_NAME = "bookChargingAppointment";
+        LOGGER.info("Entered " + CLASS_NAME + ":" + METHOD_NAME + "with inputs: " + inputObject);
+        return chargingStationServiceImpl.bookChargingAppt(inputObject);
     }
 
 

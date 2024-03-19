@@ -63,6 +63,59 @@ the values present in the User details database table
     }
 
     @Override
+    public ResponseObject getUserDetails(Map<String, Object> loginCredentials) {
+
+        long startTime=System.currentTimeMillis();
+        final String METHOD_NAME = "getUserDetails";
+        LOGGER.info("Entered " + CLASS_NAME + ":" + METHOD_NAME);
+        ResponseObject response = new ResponseObject();
+        response.setResponseCode(Constants.SUCCESS_RESPONSE_CODE);
+        response.setResponseStatus(Constants.SUCCESS_RESPONSE_MESSAGE);
+
+        if (!loginCredentials.containsKey("user_id") ||
+                (!(loginCredentials.get("user_id") instanceof String)
+                        || StringUtils.isBlank((String) loginCredentials.get("user_id")))
+        ) {
+            LOGGER.info(METHOD_NAME + ": Invalid User ID");
+            response.setResponseCode(Constants.FAILURE_RESPONSE_CODE);
+            response.setResponseStatus(Constants.FAILURE_RESPONSE_MESSAGE);
+            response.setErrorMessage("Invalid User ID");
+
+        }  else
+            response=userDetailsDAO.getUserDetails(loginCredentials);
+
+        LOGGER.info(METHOD_NAME+" -Time taken in milliseconds:"+(System.currentTimeMillis()-startTime));
+        return response;
+    }
+
+
+    @Override
+    public ResponseObject getUserBookings(Map<String, Object> loginCredentials) {
+
+        long startTime=System.currentTimeMillis();
+        final String METHOD_NAME = "getUserBookings";
+        LOGGER.info("Entered " + CLASS_NAME + ":" + METHOD_NAME);
+        ResponseObject response = new ResponseObject();
+        response.setResponseCode(Constants.SUCCESS_RESPONSE_CODE);
+        response.setResponseStatus(Constants.SUCCESS_RESPONSE_MESSAGE);
+
+        if (!loginCredentials.containsKey("user_id") ||
+                (!(loginCredentials.get("user_id") instanceof String)
+                        || StringUtils.isBlank((String) loginCredentials.get("user_id")))
+        ) {
+            LOGGER.info(METHOD_NAME + ": Invalid User ID");
+            response.setResponseCode(Constants.FAILURE_RESPONSE_CODE);
+            response.setResponseStatus(Constants.FAILURE_RESPONSE_MESSAGE);
+            response.setErrorMessage("Invalid User ID");
+
+        }  else
+            response=userDetailsDAO.getUserBookings(loginCredentials);
+
+        LOGGER.info(METHOD_NAME+" -Time taken in milliseconds:"+(System.currentTimeMillis()-startTime));
+        return response;
+    }
+
+    @Override
     public ResponseObject signupNewUser(Map<String, Object> inputUserDetails) {
 
         long startTime=System.currentTimeMillis();
