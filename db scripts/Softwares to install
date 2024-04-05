@@ -1,0 +1,148 @@
+TeamView app (To share screen):
+https://www.teamviewer.com/en-in/download/windows/
+
+Download "TeamViewer Meeting" at the bottom and once the download is completed then install the downloaded file.
+
+------
+
+
+Keepass Application to Create a Encrypted file which has all your passwords protected with one master password:
+https://keepass.info/download.html
+
+Download Keepass 2.54 for Windows exe file and install the downloaded file.
+
+------
+
+IntelliJ IDE download (For viewing and developing our application):
+https://www.jetbrains.com/idea/download/?section=windows
+
+In the above website scroll down and download the IntelliJ IDEA Community Edition (exe file) and once the download is completed then install the downloaded file.
+
+
+-------
+
+Postman download (For hitting the API services):
+https://www.postman.com/downloads/
+
+Download Windows 64-bit or 32-bit (As per your Computer configuration)
+
+Once the download is completed then install the downloaded file. 
+
+-----
+
+Oracle Database download:
+https://www.oracle.com/in/database/technologies/oracle-database-software-downloads.html
+
+In the above website scroll down and click on Run Oracle Database 21c XE on Windows --> Download Oracle Database XE for Windows (ZIP).
+
+Once the File is downloaded, then extract the zip file to a folder and open that folder and run the setup.exe file to complete Oracle Database installation. During installation it will ask you to setup password for the system user. 
+
+Note: This installation will take some time to complete. So ensure that the installation is completed successfully without any errors.
+
+
+-----
+
+Sql Developer download (To view the Graphical User Interface format of our Oracle Database tables):
+
+https://www.oracle.com/database/sqldeveloper/technologies/download/
+
+From the above website select the download link near "Windows 32-bit/64-bit" . 
+
+Once the above download is completed, then extract the Sql developer to separate folder and open the "sqldeveloper.exe" file.
+
+Adding a Database connection:
+1) Click on the "+" icon on top left Connections tab.
+2) Give a name for the Database connection (Say for example oracle_system_user_connection), then provide the username(system) and password that you had given while installing Oracle Database. 
+3) In the details tab give the below details
+hostname = localhost
+port = 1521
+Select service name radio button and give value for service name as = XEPDB1
+4) Click on "Test" button at bottom to check if your details are correct. If the details given are correct then you would get a "Success" status message in the panel bottom left. If the details are incorrect then you would receive an error message.
+5) If you get a success then click on "Save" button to save this connection. So that from next time you can directly open the connection by just entering the password. 
+6) Once connected to the database connection, you can start inserting / querying the data in your database.
+
+---------
+
+Springboot application URL:
+https://start.spring.io/
+
+What SpringBoot does is that it gives us a ready to run Spring application. So it packages all the necessary dependencies and does all the required configurations so that the developer can just focus on the business logic implementation. Also it has inbuilt tomcat server on which the Spring application runs.
+
+
+SpringBoot version --> 2.7.16
+Java version --> 8 or 1.8 both are same. 
+Maven 
+Packaging --> Jar
+
+Dependencies to be added are given in the screenshot images.
+
+Say if you are providing the values for your group and artifact as below:
+Group: com.evolt
+Artifact: chargingApp
+Name: chargingApp
+Description: eVolt Electric vehicles charging application
+Package name: com.evolt.chargingApp
+
+Then on clicking "Generate" button at the bottom a file named "chargingApp.zip" will get downloaded to your system. Extract this folder to any folder location and import it to your intelliJ IDE.
+
+
+
+
+----------
+
+
+Steps to import the downloaded project to intelliJ:
+1) Extract the zip file that was downloaded from the SpringBoot application to a specific folder(Target folder).
+2) Open IntelliJ application and select Menu bar at top left --> File --> Open --> Paste the complete location path where you have extracted the zip file to (i.e. Target folder From Step1).
+
+If it asks for "Trust Project", then click on "Trust Project" button.
+
+If it asks for Open in New windown , then click on "Open in New Window"
+
+When you open the project for the first time it will take time since it will download all the Maven dependencies(Provided that you have configured Maven correctly in your computer).
+
+-------
+
+Steps to run a SpringBoot application:
+
+Source folder where we type all our program logics: src --> main --> java
+Folder where we type all the unit test cases for our programs : src --> test --> java
+
+Starter class is present in below path:
+
+src --> main --> java --> com.evolt.chargingApp --> ChargingAppApplication
+
+You will have an annotation like this above the class name
+@SpringBootApplication
+
+
+Change this above annotation to the below format
+@SpringBootApplication(exclude={DataSourceAutoConfiguration.class})
+
+Creating a run configuration: 
+Menu --> Run --> Edit Configurations --> Click "+" button on top left --> Select "Application" option on the left panel --> Give name for the run configuration (Say example "ChargingAppConfig") --> Select jdk 1.8 from first dropdown --> Provide main class as "com.evolt.chargingApp.ChargingAppApplication" --> Click on Apply and Ok buttons.
+
+Running the newly created configuration:
+Menu --> Run --> Edit Configurations --> Select the "ChargingAppConfig" and click on "Run" button at bottom.
+
+---------
+
+Github account:
+Email ID: harinisathish.8@gmail.com
+Password:Githubharini1!
+User name: HariniSathish8
+
+
+I have created new branch called "harini_develop" from the main branch. 
+
+Download and install github desktop from below website:
+https://desktop.github.com/
+
+Then clone with this URL to a location on your system.
+https://github.com/Mukund5/eVoltChargingApp.git
+
+Select branch as "harini_develop"
+
+"main" branch is the main branch to which all developers will push their changes. So before you push any of your local changes to main branch, always make sure that you have pulled the latest changes from the main branch. 
+
+-----------

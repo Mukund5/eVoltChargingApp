@@ -1,0 +1,370 @@
+{
+	"info": {
+		"_postman_id": "776b0c75-3539-4230-ba15-18070c88ddf4",
+		"name": "eVolt application",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7302339"
+	},
+	"item": [
+		{
+			"name": "ValidateLogin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email_id\": \"alexcarey@gmail.com\",\r\n    \"password\": \"blaBlueiuT\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/evolt/user/validateLogin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"evolt",
+						"user",
+						"validateLogin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Signup User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email_id\": \"monica.mukund@gmail.com\",\r\n    \"password\": \"Moni123\",\r\n    \"first_name\":\"Monica\",\r\n    \"last_name\":\"Mukund\",\r\n    \"driving_license\":\"TN55 20801012114\",\r\n    \"phone_number\":\"9710152756\",\r\n    \"user_type\":\"Customer\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/evolt/user/signupUser",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"evolt",
+						"user",
+						"signupUser"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get brand names",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"vehicle_type\":\"all\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/evolt/vehicle/getBrandsList",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"evolt",
+						"vehicle",
+						"getBrandsList"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Model names",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"vehicle_type\":\"all\",\r\n    \"brand_name\":\"Komaki Motors\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/evolt/vehicle/getModelsList",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"evolt",
+						"vehicle",
+						"getModelsList"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add new vehicle",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user_id\":\"10002\",\r\n    \"vehicle_id\":\"2018\",\r\n    \"registration_number\":\"TN06 FX 7110\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/evolt/vehicle/registerNewVehicle",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"evolt",
+						"vehicle",
+						"registerNewVehicle"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Registered Vehicles",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user_id\":\"10001\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/evolt/vehicle/listRegisteredVehicles",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"evolt",
+						"vehicle",
+						"listRegisteredVehicles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Charging Stations",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n   \"pincode\":\"600005\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/evolt/charging/getChargingStations",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"evolt",
+						"charging",
+						"getChargingStations"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Charging Ports Details",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"station_id\":\"70006\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/evolt/charging/getChargingPortsDetails",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"evolt",
+						"charging",
+						"getChargingPortsDetails"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Charging Appointments",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"charging_point_id\":\"600005\",\r\n  \"appointment_date\":\"22-Dec-2023\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/evolt/charging/getChargingApptDetails",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"evolt",
+						"charging",
+						"getChargingApptDetails"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Book Charging Appointment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"user_id\":\"10002\",\r\n  \"charging_point_id\":\"600005\",\r\n  \"appointment_date\":\"22-Dec-2023\",\r\n  \"appointment_start_time\":\"14:30\",\r\n  \"appointment_end_time\":\"15:00\",\r\n  \"selected_charging_type\":\"normal\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/evolt/charging/bookChargingAppt",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"evolt",
+						"charging",
+						"bookChargingAppt"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Details",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"user_id\":\"10006\"\r\n \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/evolt/user/getUserDetails",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"evolt",
+						"user",
+						"getUserDetails"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Bookings",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"user_id\":\"10006\"\r\n \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/evolt/user/getUserBookings",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"evolt",
+						"user",
+						"getUserBookings"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
