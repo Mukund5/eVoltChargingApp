@@ -1,0 +1,56 @@
+
+
+User:
+user_id * Primary Key
+user_type *
+first_name *
+last_name
+email_address *
+phone_number *
+enc_password *
+
+
+Charging points:
+charge_pt_id * Primary Key
+charging_station_id *
+charging_speed *
+rate_normal_charging(per hour) *
+rate_fast_charging(per hour)
+rate_super_fast_charging(per hour)
+status * (Unverified,Active,Under Maintenance,Decommissioned)
+address*
+geo_location*
+
+Charging appointments:
+appointment_id* Primary Key
+charge_pt_id*
+user_id *
+appt_date*
+appt_start_time*
+duration*
+selected_charging_type*
+fare*
+
+Feedback:
+feedback_id* Primary Key
+user_id*
+feedback_rating*
+feedback_description*
+charge_pt_id
+
+
+Car:
+car_model_id * Primary Key
+brand_name *
+model_name * 
+model_number *
+battery_capacity *
+supports_fast_charging *
+supports_super_fast_charging *
+
+
+//Revenue Reports:
+
+
+
+

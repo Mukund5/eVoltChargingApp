@@ -1,0 +1,7 @@
+Oracle credentials:
+username: system
+password:mukund123
+
+username:evuser
+password:evcharge123
+

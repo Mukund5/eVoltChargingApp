@@ -1,0 +1,258 @@
+Download Oracle c21 and sqldeveloper
+
+
+
+-- Connect via system user 
+--Creating Schema
+CREATE USER evuser IDENTIFIED BY evcharge123;
+
+select * from dba_users where lower(username)='evuser';
+
+GRANT create session TO evuser;
+GRANT create table TO evuser;
+GRANT create view TO evuser;
+GRANT create any trigger TO evuser;
+GRANT create any procedure TO evuser;
+GRANT create sequence TO evuser;
+GRANT create synonym TO evuser;
+
+ALTER USER evuser quota unlimited on users;
+
+
+--Connect via evuser_conn and create below tables  
+
+drop table evuser.vehicle_details;
+drop table evuser.vehicle_master;
+drop table evuser.feedback;
+drop table evuser.charging_appointments;
+drop table evuser.charging_points;
+drop table evuser.user_details;
+drop table evuser.charging_station;
+
+
+CREATE TABLE evuser.user_details(user_id NUMBER(10),
+user_type Varchar2(20),
+first_name Varchar2(20),
+last_name Varchar2(20),
+email_address Varchar2(30),
+phone_number NUMBER(15),
+enc_password Varchar2(50),
+driving_license Varchar2(50),
+CONSTRAINT user_details_pk PRIMARY KEY(user_id));
+
+insert into user_details (user_id,user_type,first_name,last_name,email_address,phone_number,enc_password,driving_license) values (10001,'Customer','Alex','Carey','alexcarey@gmail.com',9710597576,'blaBlueiuT','TN54 20080001214');
+
+
+create table evuser.charging_station(
+charging_station_id number(10),
+station_name varchar2(50),
+pincode number(6),
+district varchar2(20),
+state varchar2(20),
+address varchar2(100),
+geo_location varchar2(30),
+status varchar2(20),
+created_date timestamp,
+last_modified_date timestamp,
+constraint charging_stations_pk primary key(charging_station_id));
+
+
+insert into evuser.charging_station(
+charging_station_id,station_name,pincode,district,state,address,geo_location,status,created_date,last_modified_date) values (70001,'Omni Power Solutions',600088,'Chennai','TamilNadu','No.34, Avvai Street','Adambakkam','Active',systimestamp,systimestamp);
+
+
+create table evuser.charging_points(charging_pt_id number(10),
+charging_station_id number(10),
+supports_fast_charging varchar2(1),
+supports_super_fast_charging varchar2(1),
+rate_normal_charging number(5),
+rate_fast_charging number(5),
+rate_super_fast_charging number(5),
+status varchar2(20),
+created_date timestamp,
+last_modified_date timestamp,
+constraint charging_points_pk primary key(charging_pt_id),
+FOREIGN KEY (charging_station_id) REFERENCES evuser.charging_station(charging_station_id));
+
+insert into
+evuser.charging_points (charging_pt_id,charging_station_id,supports_fast_charging,supports_super_fast_charging,rate_normal_charging,rate_fast_charging,rate_super_fast_charging,status,created_date,last_modified_date)
+values(600005,70001,'Y','N',30,60,null,'Active',systimestamp,systimestamp);
+
+
+create table evuser.charging_appointments(appointment_id number(10),
+charging_pt_id number(10),
+user_id  number(10),
+appt_date DATE,
+appt_start_time timestamp,
+duration_in_mins number(5),
+appt_end_time timestamp,
+appt_status varchar2(20),
+selected_charging_type varchar2(20),
+total_fare number(10),
+constraint charging_appointments_pk primary key(appointment_id),
+FOREIGN KEY (charging_pt_id) REFERENCES evuser.charging_points(charging_pt_id),
+FOREIGN KEY (user_id) REFERENCES evuser.user_details(user_id)
+);
+
+insert into evuser.charging_appointments(appointment_id,charging_pt_id,user_id,appt_date,appt_start_time,duration_in_mins,appt_end_time,appt_status,selected_charging_type,total_fare)
+values(90000,600005,10001,TO_DATE('22-DEC-2023'),TO_TIMESTAMP('22-DEC-2023 13:30:00', 'DD-MON-YYYY HH24:MI:SS'),90,TO_TIMESTAMP('22-DEC-2023 15:00:00', 'DD-MON-YYYY HH24:MI:SS'),'Reserved','Fast',120);
+
+insert into evuser.charging_appointments(appointment_id,charging_pt_id,user_id,appt_date,appt_start_time,duration_in_mins,appt_end_time,appt_status,selected_charging_type,total_fare)
+values(90001,600005,10001,TO_DATE('22-DEC-2023'),TO_TIMESTAMP('22-DEC-2023 17:30:01', 'DD-MON-YYYY HH24:MI:SS'),30,TO_TIMESTAMP('22-DEC-2023 17:59:59', 'DD-MON-YYYY HH24:MI:SS'),'Ongoing','Superfast',60);
+
+insert into evuser.charging_appointments(appointment_id,charging_pt_id,user_id,appt_date,appt_start_time,duration_in_mins,appt_end_time,appt_status,selected_charging_type,total_fare)
+values(90002,600005,10001,TO_DATE('22-DEC-2023'),TO_TIMESTAMP('22-DEC-2023 19:00:01', 'DD-MON-YYYY HH24:MI:SS'),60,TO_TIMESTAMP('22-DEC-2023 19:59:59', 'DD-MON-YYYY HH24:MI:SS'),'Reserved','Superfast',120);
+
+
+create table evuser.feedback(feedback_id number(10),
+user_id number(10),
+feedback_rating number(5),
+feedback_description varchar2(50),
+charging_pt_id number(10),
+constraint feedback_pk primary key(feedback_id),
+FOREIGN KEY (charging_pt_id) REFERENCES evuser.charging_points(charging_pt_id),
+FOREIGN KEY (user_id) REFERENCES evuser.user_details(user_id)
+);
+
+
+insert into evuser.feedback(feedback_id,user_id,feedback_rating,feedback_description,charging_pt_id)
+values(201,10001,5,'Good customer service',null);
+
+create table evuser.vehicle_master(vehicle_id number(10),
+brand_name varchar2(20),
+model_name varchar2(20),
+model_number varchar2(10),
+battery_capacity number(5),
+supports_fast_charging varchar2(1),
+supports_super_fast_charging varchar2(1),
+seating_capacity number(3),
+driving_range number(5),
+constraint vehicle_pk primary key(vehicle_id)
+);
+
+insert into evuser.vehicle_master(vehicle_id,brand_name,model_name,model_number,battery_capacity,supports_fast_charging,
+supports_super_fast_charging,seating_capacity,driving_range)
+values(2001,'Tata Motors','Tata Nexon EV','X152',30,'Y','Y',5,325);
+
+insert into evuser.vehicle_master(vehicle_id,brand_name,model_name,model_number,battery_capacity,supports_fast_charging,
+supports_super_fast_charging,seating_capacity,driving_range)
+values(2002,'Mahindra Motorcorp','Mahindra XUV400','XUV400',35,'Y','Y',5,375);
+
+insert into evuser.vehicle_master(vehicle_id,brand_name,model_name,model_number,battery_capacity,supports_fast_charging,
+supports_super_fast_charging,seating_capacity,driving_range)
+values(2003,'Tata Motors','Tata Tiago EV','X150',20,'Y','N',5,250);
+
+insert into evuser.vehicle_master(vehicle_id,brand_name,model_name,model_number,battery_capacity,supports_fast_charging,
+supports_super_fast_charging,seating_capacity,driving_range)
+values(2004,'Morris Garage','MG Comet EV','MG5',20,'N','N',4,230);
+
+insert into evuser.vehicle_master(vehicle_id,brand_name,model_name,model_number,battery_capacity,supports_fast_charging,
+supports_super_fast_charging,seating_capacity,driving_range)
+values(2005,'Hyundai Motors','Hyundai Ioniq 5','IO5',75,'Y','Y',5,600);
+
+insert into evuser.vehicle_master(vehicle_id,brand_name,model_name,model_number,battery_capacity,supports_fast_charging,
+supports_super_fast_charging,seating_capacity,driving_range)
+values(2006,'Kia Motors','Kia EV6','KEV6',80,'Y','Y',5,700);
+
+insert into evuser.vehicle_master(vehicle_id,brand_name,model_name,model_number,battery_capacity,supports_fast_charging,
+supports_super_fast_charging,seating_capacity,driving_range)
+values(2007,'Volvo Motors','Volvo XC40 Recharge','XC40',70,'Y','Y',5,400);
+
+insert into evuser.vehicle_master(vehicle_id,brand_name,model_name,model_number,battery_capacity,supports_fast_charging,
+supports_super_fast_charging,seating_capacity,driving_range)
+values(2008,'Morris Garage','MG ZS EV','ZS1',50,'Y','Y',5,450);
+
+insert into evuser.vehicle_master(vehicle_id,brand_name,model_name,model_number,battery_capacity,supports_fast_charging,
+supports_super_fast_charging,seating_capacity,driving_range)
+values(2009,'Citroen Motors','Citroen eC3','eC3',30,'Y','N',5,325);
+
+insert into evuser.vehicle_master(vehicle_id,brand_name,model_name,model_number,battery_capacity,supports_fast_charging,
+supports_super_fast_charging,seating_capacity,driving_range)
+values(2010,'Audi Motors','Audi e-tron GT','EGT1',90,'Y','Y',5,400);
+
+insert into evuser.vehicle_master(vehicle_id,brand_name,model_name,model_number,battery_capacity,supports_fast_charging,
+supports_super_fast_charging,seating_capacity,driving_range)
+values(2011,'Volvo Motors','Volvo C40 Recharge','C40',75,'Y','Y',5,450);
+
+insert into evuser.vehicle_master(vehicle_id,brand_name,model_name,model_number,battery_capacity,supports_fast_charging,
+supports_super_fast_charging,seating_capacity,driving_range)
+values(2012,'Hyundai Motors','Hyundai Kona Elec','KE51',40,'Y','Y',5,450);
+
+insert into evuser.vehicle_master(vehicle_id,brand_name,model_name,model_number,battery_capacity,supports_fast_charging,
+supports_super_fast_charging,seating_capacity,driving_range)
+values(2013,'Tata Motors','Tata Tigor EV','TEV1',30,'Y','N',5,320);
+
+insert into evuser.vehicle_master(vehicle_id,brand_name,model_name,model_number,battery_capacity,supports_fast_charging,
+supports_super_fast_charging,seating_capacity,driving_range)
+values(2014,'BMW','BMW i7','i7',80,'Y','Y',5,600);
+
+insert into evuser.vehicle_master(vehicle_id,brand_name,model_name,model_number,battery_capacity,supports_fast_charging,
+supports_super_fast_charging,seating_capacity,driving_range)
+values(2015,'Ola Motors','OLA S1 Pro Gen 2','PG2',20,'Y','N',2,150);
+
+insert into evuser.vehicle_master(vehicle_id,brand_name,model_name,model_number,battery_capacity,supports_fast_charging,
+supports_super_fast_charging,seating_capacity,driving_range)
+values(2016,'Ather Motors','Ather 450X Gen 3','AEGX3',25,'Y','N',2,175);
+
+insert into evuser.vehicle_master(vehicle_id,brand_name,model_name,model_number,battery_capacity,supports_fast_charging,
+supports_super_fast_charging,seating_capacity,driving_range)
+values(2017,'TVS Motors','TVS iQube','iQ5',25,'Y','N',2,160);
+
+insert into evuser.vehicle_master(vehicle_id,brand_name,model_name,model_number,battery_capacity,supports_fast_charging,
+supports_super_fast_charging,seating_capacity,driving_range)
+values(2018,'Ather Motors','Ather 470S','470S',20,'Y','N',2,170);
+
+insert into evuser.vehicle_master(vehicle_id,brand_name,model_name,model_number,battery_capacity,supports_fast_charging,
+supports_super_fast_charging,seating_capacity,driving_range)
+values(2019,'Ola Motors','OLA S1 Air','S1A',30,'Y','Y',2,200);
+
+insert into evuser.vehicle_master(vehicle_id,brand_name,model_name,model_number,battery_capacity,supports_fast_charging,
+supports_super_fast_charging,seating_capacity,driving_range)
+values(2020,'Ola Motors','OLA S1 X','S1X',20,'N','N',2,160);
+
+insert into evuser.vehicle_master(vehicle_id,brand_name,model_name,model_number,battery_capacity,supports_fast_charging,
+supports_super_fast_charging,seating_capacity,driving_range)
+values(2021,'Ather Motors','Ather 450S','AE450S',25,'Y','N',2,200);
+
+insert into evuser.vehicle_master(vehicle_id,brand_name,model_name,model_number,battery_capacity,supports_fast_charging,
+supports_super_fast_charging,seating_capacity,driving_range)
+values(2022,'Okinawa Motors','Okinawa R30','OKR30',30,'Y','Y',2,220);
+
+insert into evuser.vehicle_master(vehicle_id,brand_name,model_name,model_number,battery_capacity,supports_fast_charging,
+supports_super_fast_charging,seating_capacity,driving_range)
+values(2023,'Komaki Motors','Komaki Ranger','KOM1R',35,'Y','Y',2,230);
+
+insert into evuser.vehicle_master(vehicle_id,brand_name,model_name,model_number,battery_capacity,supports_fast_charging,
+supports_super_fast_charging,seating_capacity,driving_range)
+values(2024,'Komaki Motors','Komaki M-5','KOM2R',30,'Y','Y',2,240);
+
+insert into evuser.vehicle_master(vehicle_id,brand_name,model_name,model_number,battery_capacity,supports_fast_charging,
+supports_super_fast_charging,seating_capacity,driving_range)
+values(2025,'Komaki Motors','Komaki MX3','KOM3R',40,'Y','Y',2,250);
+
+
+
+create table evuser.vehicle_details(vehicle_detail_id number(10),
+vehicle_id number(10),
+user_id  number(10),
+registration_number varchar2(20),
+created_date TIMESTAMP,
+last_modified_date TIMESTAMP,
+constraint vehicle_details_pk primary key(vehicle_detail_id),
+FOREIGN KEY (vehicle_id) REFERENCES evuser.vehicle_master(vehicle_id),
+FOREIGN KEY (user_id) REFERENCES evuser.user_details(user_id)
+);
+
+
+insert into evuser.vehicle_details(vehicle_detail_id,vehicle_id,user_id,registration_number,created_date,last_modified_date) values (5001,2001,10001,'TN05 CX 7890',systimestamp,systimestamp);
+
+commit;
+
+select * from evuser.user_details;
+select * from evuser.charging_points;
+select * from evuser.charging_appointments;
+select * from evuser.feedback;
+select * from evuser.vehicle_master;
+select * from evuser.vehicle_details;
+select * from evuser.charging_station;
+
